@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        COMPOSE_FILE = 'UpdateHedgeDoc/files/docker-compose.yml'
+        COMPOSE_DIR = 'UpdateHedgeDoc/files'
         REGISTRY_API = 'https://quay.io/api/v1/repository/hedgedoc/hedgedoc/tag/'
     }
 
