@@ -1,0 +1,30 @@
+ 
+services:
+  database:
+    image: postgres:17.7-alpine
+    environment:
+      - POSTGRES_USER=hedgedoc
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=hedgedoc
+    volumes:
+      - database:/var/lib/postgresql/data
+    restart: always
+  app:
+    image: quay.io/hedgedoc/hedgedoc:1.10.8-alpine
+    environment:
+      - CMD_DB_URL=postgres://hedgedoc:password@database:5432/hedgedoc
+      - CMD_DOMAIN=192.168.100.14
+      - CMD_DOCUMENT_MAX_LENGTH=100000000
+      - CMD_URL_ADDPORT=true
+      - CMD_HSTS_ENABLE=true
+      - UPLOADS_MODE=0755
+    volumes:
+      - uploads:/hedgedoc/public/uploads
+    ports:
+      - "3000:3000"
+    restart: always
+    depends_on:
+      - database
+volumes:
+  database:
+  uploads:
