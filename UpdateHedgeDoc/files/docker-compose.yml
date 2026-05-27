@@ -10,7 +10,7 @@ services:
       - database:/var/lib/postgresql/data
     restart: always
   app:
-    image: quay.io/hedgedoc/hedgedoc:1.10.8-alpine
+    image: quay.io/hedgedoc/hedgedoc:1.10.7-alpine
     environment:
       - CMD_DB_URL=postgres://hedgedoc:password@database:5432/hedgedoc
       - CMD_DOMAIN=192.168.100.14
