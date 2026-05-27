@@ -41,18 +41,19 @@ pipeline {
             }
             steps {
                 script {
-                    def composePath = "${env.WORKSPACE}/${env.COMPOSE_DIR}/docker-compose.yml"
+                    def composePath = "${env.WORKSPACE}/UpdateHedgeDoc/files/docker-compose.yml"
+                    echo "Updating docker-compose.yml file..."
                     sh "sed -i 's/${env.CURRENT_TAG}/${env.LATEST_TAG}/g' '${composePath}'"
                     echo "Stopping current service..."
-                    sh "docker compose -f '${composePath}' stop"
+                    sh "docker compose -f '${composePath}' -p hedgedoc stop"
                     echo "Removing container..."
-                    sh "docker compose -f '${composePath}' rm -f"
+                    sh "docker compose -f '${composePath}' -p hedgedoc rm -f"
                     echo "Removing old image..."
                     sh "docker rmi quay.io/hedgedoc/hedgedoc:${env.CURRENT_TAG} || true"
                     echo "Deploying new version..."
-                    sh "docker compose -f '${composePath}' up -d"
+                    sh "docker compose -f '${composePath}' -p hedgedoc up -d"
                 }
             }
-        } 
+        }
     }
 }
