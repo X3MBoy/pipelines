@@ -14,7 +14,7 @@ pipeline {
                     echo "Current Tag in docker-compose: ${currentTag}"
                     def latestTagCmd = """
                         curl -s "${REGISTRY_API}?limit=100" | \
-                        jq -r '.tags[] | select(.name | endswith("-alpine")) | .name' | head -n 1
+			grep -oP '"name": "\\K[a-zA-Z0-9.-]+-alpine(?=")' | head -n 1
                     """
                     def latestTag = sh(script: latestTagCmd, returnStdout: true).trim()
                     echo "Last tag available in Quay.io: ${latestTag}"
