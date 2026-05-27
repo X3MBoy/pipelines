@@ -39,20 +39,19 @@ pipeline {
                 environment name: 'NEW_TAG_FOUND', value: 'true'
             }
             steps {
-                dir('UpdateHedgeDoc/files') {
-                    script {
-                        sh "sed -i 's/${env.CURRENT_TAG}/${env.LATEST_TAG}/g' docker-compose.yml"
-                        echo "Stopping current service..."
-                        sh "docker compose stop"
-                        echo "Deleting container..."
-                        sh "docker compose rm -f"
-                        echo "Deleting image to save space..."
-                        sh "docker rmi quay.io/hedgedoc/hedgedoc:${env.CURRENT_TAG} || true"
-                        echo "Deploying new version..."
-                        sh "docker compose up -d"
-                    }
+                script {
+                    def composePath = "${env.WORKSPACE}/${env.COMPOSE_DIR}/docker-compose.yml"
+                    sh "sed -i 's/${env.CURRENT_TAG}/${env.LATEST_TAG}/g' '${composePath}'"
+                    echo "Stopping current service..."
+                    sh "docker compose -f '${composePath}' stop"
+                    echo "Removing container..."
+                    sh "docker compose -f '${composePath}' rm -f"
+                    echo "Removing old image..."
+                    sh "docker rmi quay.io/hedgedoc/hedgedoc:${env.CURRENT_TAG} || true"
+                    echo "Deploying new version..."
+                    sh "docker compose -f '${composePath}' up -d"
                 }
             }
-        }
+        } 
     }
 }
