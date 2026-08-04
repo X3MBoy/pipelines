@@ -51,7 +51,7 @@ pipeline {
                     echo "Removing old image..."
                     sh "docker rmi quay.io/hedgedoc/hedgedoc:${env.CURRENT_TAG} || true"
                     echo "Deploying new version..."
-                    sh "docker compose -f '${composePath}' -p hedgedoc up -d"
+                    sh "sudo docker compose -f '${composePath}' -p hedgedoc up -d"
                 }
             }
         }
